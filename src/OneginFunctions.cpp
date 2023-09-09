@@ -6,5 +6,5 @@ size_t GetFileLength(const char* path)
     struct stat result = {};
     stat(path, &result);
 
-    return result.st_size;
+    return (size_t)result.st_size;
 }

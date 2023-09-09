@@ -2,26 +2,21 @@
 #include <sys/stat.h>
 #include <stdlib.h>
 #include "OneginFunctions.hpp"
+#include "string_functions.hpp"
 
 int main(void)
 {
     const char HAMLET_PATH[] = "hamlet.txt";
-
-    const size_t MAX_LINES = 10,
-                 MAX_LINE_LENGTH = 200;
-
     size_t hamletLength = GetFileLength(HAMLET_PATH);
 
     char* rawText = (char*)calloc(hamletLength + 2, sizeof(char));
-
+    rawText[hamletLength] = '\n';
+    rawText[hamletLength + 1] = '\0';
     FILE* hamlet = fopen(HAMLET_PATH, "r");
-
-    fread(rawText, MAX_LINES, MAX_LINE_LENGTH, hamlet);
-
+    fread(rawText, sizeof(char), hamletLength, hamlet);
     fclose(hamlet);
 
-    printf(rawText);
-
+    puts(rawText);
     free(rawText);
 
     return 0;
