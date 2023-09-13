@@ -3,8 +3,8 @@
 #include <stdlib.h>
 #include <string.h>
 #include "OneginFunctions.hpp"
-#include "string_functions.hpp"
-#include "utils.hpp"
+#include "StringFunctions.hpp"
+#include "Utils.hpp"
 
 #define TESTINGs
 

@@ -2,7 +2,7 @@
 #define ONEGIN_FUNCTIONS_HPP
 
 #include <stddef.h>
-#include "string_functions.hpp"
+#include "StringFunctions.hpp"
 
 static const char* IGNORED_SYMBOLS = " ,.;:'\"-!";
 

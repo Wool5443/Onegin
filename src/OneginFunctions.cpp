@@ -4,8 +4,8 @@
 #include <ctype.h>
 #include <stdio.h>
 #include "OneginFunctions.hpp"
-#include "utils.hpp"
-#include "string_functions.hpp"
+#include "Utils.hpp"
+#include "StringFunctions.hpp"
 
 size_t getFileSize(const char* path);
 
@@ -59,6 +59,9 @@ void SortTextLines(Text* text, StringCompareMethod sortType)
             break;
         case END_TO_START:
             Sort((void*)(text->lines), text->numberOfLines, sizeof((text->lines)[0]), _stringCompareEndToStart);
+            break;
+        default:
+            Sort((void*)(text->lines), text->numberOfLines, sizeof((text->lines)[0]), _stringCompareStartToEnd);
             break;
     }
 }
