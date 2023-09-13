@@ -6,13 +6,6 @@
 #include "StringFunctions.hpp"
 #include "Utils.hpp"
 
-#define TESTINGs
-
-int intComp(const void* a, const void* b)
-{
-    return *(const int*)a - *(const int*)b;
-}
-
 int main(void)
 {
     const char HAMLET_PATH[] = "hamlet2.txt";
