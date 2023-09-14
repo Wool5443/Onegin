@@ -4,7 +4,7 @@
 #include <stddef.h>
 #include "StringFunctions.hpp"
 
-static const char* IGNORED_SYMBOLS = " ,.;:'\"-!";
+static const char* IGNORED_SYMBOLS = " ,.;:'\"-!?`~()[]{}";
 
 struct Text
 {

@@ -3,9 +3,12 @@
 #include <stdlib.h>
 #include <assert.h>
 #include <ctype.h>
+#include <time.h>
 #include "Utils.hpp"
 
 const double ABSOLUTE_TOLERANCE = 1e-5;
+
+void selectionSort(void* data, size_t elementCount, size_t elementSize, CompareFunction_t* compareFunction);
 
 void selectionSort(void* data, size_t elementCount, size_t elementSize, CompareFunction_t* compareFunction);
 
@@ -48,6 +51,23 @@ void Sort(void* data, size_t elementCount, size_t elementSize, CompareFunction_t
 	selectionSort(data, elementCount, elementSize, compareFunction);
 }
 
+void selectionSort(void* data, size_t elementCount, size_t elementSize, CompareFunction_t* compareFunction)
+{
+	for (size_t i = 0; i < elementCount; i++)
+	{
+		const void* temp = MinArray(data + i * elementSize, elementCount - i, elementSize, compareFunction);
+		SWAP(data + i * elementSize, temp, elementSize);
+	}
+}
+
+// void qSort(void* data, size_t elementCount, size_t elementSize, CompareFunction_t* compareFunction)
+// {
+// 	srand(time(NULL));
+// 	void* pivot = data + (rand() % elementCount) * elementSize;
+// }
+
+// void partion();
+
 void ClearBuffer(void)
 {
 	while (getchar() != '\n') { ; }
@@ -77,14 +97,5 @@ void SetConsoleColor(FILE* place, const enum Color color)
 	default: //set the color to white
 		fprintf(place, "\033[0;37m");
 		break;
-	}
-}
-
-void selectionSort(void* data, size_t elementCount, size_t elementSize, CompareFunction_t* compareFunction)
-{
-	for (size_t i = 0; i < elementCount; i++)
-	{
-		const void* temp = MinArray(data + i * elementSize, elementCount - i, elementSize, compareFunction);
-		SWAP(data + i * elementSize, temp, elementSize);
 	}
 }
