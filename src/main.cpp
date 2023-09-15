@@ -5,6 +5,11 @@
 #include "StringFunctions.hpp"
 #include "Utils.hpp"
 
+// int intC(const void* a, const void* b)
+// {
+//     return *(int*)a - *(int*)b;
+// }
+
 int main(const int argc, const char* const* argv)
 {
     if (argc < 3)
@@ -37,6 +42,15 @@ int main(const int argc, const char* const* argv)
 
     DestroyText(&hamlet);
     fclose(out);
+
+    // int a[] = {5, 6, 1, 2, 7, 7, 7};
+    // size_t n = 7;
+
+    // Sort(a, n, 4, intC);
+
+    // for (size_t i = 0; i < n; i++)
+    //     printf("%d ", a[i]);
+    // puts("");
 
     return 0;
 }

@@ -12,7 +12,7 @@ void selectionSort(void* data, size_t elementCount, size_t elementSize, CompareF
 
 void quickSort(void* start, void* end, size_t elementSize, CompareFunction_t* compareFunction);
 
-void* partion(void* left, void* right, size_t elementSize, CompareFunction_t compareFunction);
+void* partition(void* left, void* right, size_t elementSize, CompareFunction_t compareFunction);
 
 void sort3Elements(void* data, size_t elementSize, CompareFunction_t compareFunction);
 
@@ -114,13 +114,13 @@ void quickSort(void* start, void* end, size_t elementSize, CompareFunction_t* co
 		break;
 	}
 
-	void* pivot = partion(start, end, elementSize, compareFunction);
+	void* pivot = partition(start, end, elementSize, compareFunction);
 
 	quickSort(start, pivot - elementSize, elementSize, compareFunction);
 	quickSort(pivot + elementSize, end, elementSize, compareFunction);
 }
 
-void* partion(void* start, void* end, size_t elementSize, CompareFunction_t compareFunction)
+void* partition(void* start, void* end, size_t elementSize, CompareFunction_t compareFunction)
 {
 	MyAssertHard(start, ERROR_NULLPTR, );
 	MyAssertHard(end, ERROR_NULLPTR, );
@@ -128,14 +128,17 @@ void* partion(void* start, void* end, size_t elementSize, CompareFunction_t comp
 	srand((unsigned int)time(NULL));
 	size_t arrayLength = ((size_t)end - (size_t)start) / elementSize + 1;
 
-	void* pivotPtr = start + ((size_t)rand() % (arrayLength - 2) + 1) * elementSize;
+	void* pivotPtr = start + ((size_t)rand() % arrayLength) * elementSize;
+
+	// printf("Pivot = %d\n", *(int*)pivotPtr);
+
+	// for (void* t = start; t <= end; t += elementSize)
+	// 	printf("%d ", *(int*)t);
+	// printf("\n\n");
 
 	Swap(start, pivotPtr, elementSize);
 	void* pivotValue = start;
 	start += elementSize;
-
-
-	// printf("Pivot = %d\n", *(int*)pivotValue);
 
 	void* left  = start;
 	void* right = end;
@@ -145,13 +148,13 @@ void* partion(void* start, void* end, size_t elementSize, CompareFunction_t comp
 		int comp1 = compareFunction(left, pivotValue);
 		int comp2 = compareFunction(right, pivotValue);
 	
-		while (comp1 < 0)
+		while (comp1 < 0 && left < right)
 		{
 			left += elementSize;
 			comp1 = compareFunction(left, pivotValue);
 		}
 	
-		while (compareFunction(right, pivotValue) > 0) 
+		while (comp2 > 0 && left < right) 
 		{
 			right -= elementSize;
 			comp2 = compareFunction(right, pivotValue);
@@ -174,8 +177,13 @@ void* partion(void* start, void* end, size_t elementSize, CompareFunction_t comp
 	}
 
 	start -= elementSize;
-	Swap(pivotValue, left, elementSize);
-	return left;
+	Swap(pivotValue, left - elementSize, elementSize);
+
+	// for (void* t = start; t <= end; t += elementSize)
+	// 	printf("%d ", *(int*)t);
+	// printf("\n\n");
+
+	return left - elementSize;
 }
 
 void sort3Elements(void* data, size_t elementSize, CompareFunction_t compareFunction)
