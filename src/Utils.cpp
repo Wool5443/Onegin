@@ -104,10 +104,10 @@ void* partion(void* start, void* end, size_t elementSize, CompareFunction_t comp
 	MyAssertHard(start, ERROR_NULLPTR, );
 	MyAssertHard(end, ERROR_NULLPTR, );
 	
-	srand(time(NULL));
+	srand((unsigned int)time(NULL));
 	size_t arrayLength = ((size_t)end - (size_t)start) / elementSize + 1;
 
-	void* pivotPtr = start + (rand() % (arrayLength - 2) + 1) * elementSize;
+	void* pivotPtr = start + ((size_t)rand() % (arrayLength - 2) + 1) * elementSize;
 	void* pivotValue = calloc(1, elementSize);
 	memmove(pivotValue, pivotPtr, elementSize);
 

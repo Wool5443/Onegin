@@ -7,7 +7,7 @@
 /**
  * @brief Charachters to ignore in texts.
 */
-static const char* IGNORED_SYMBOLS = " ,.;:'\"-!?`~()[]{}";
+static const char* const IGNORED_SYMBOLS = " ,.;:'\"-!?`~()[]{}";
 
 /** @struct Text
  * @brief Text struct which contains text itself and lines of the text.
