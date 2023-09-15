@@ -145,7 +145,7 @@ void* partition(void* start, void* end, size_t elementSize, CompareFunction_t co
 
 	while (left < right)
 	{
-		int comp1 = compareFunction(left, pivotValue);
+		int comp1 = compareFunction(left,  pivotValue);
 		int comp2 = compareFunction(right, pivotValue);
 	
 		while (comp1 < 0 && left < right)
