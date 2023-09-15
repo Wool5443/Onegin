@@ -4,8 +4,19 @@
 #include <stddef.h>
 #include "StringFunctions.hpp"
 
+/**
+ * @brief Charachters to ignore in texts.
+*/
 static const char* IGNORED_SYMBOLS = " ,.;:'\"-!?`~()[]{}";
 
+/** @struct Text
+ * @brief Text struct which contains text itself and lines of the text.
+ * 
+ * @var Text::rawText - text.
+ * @var Text::lines - const pointers to lines in rawText.
+ * @var Text::size - number of bytes in text.
+ * @var Text::numberOfLines - the length of lines.
+*/
 struct Text
 {
     const char* rawText;
@@ -14,14 +25,44 @@ struct Text
     size_t numberOfLines;
 };
 
+/**
+ * @brief Creates a Text member and reads its contents from file.
+ * 
+ * @param [in] path - the path to a file.
+ * 
+ * @return Text.
+*/
 Text CreateText(const char* path);
 
+/**
+ * @brief Frees all text's memory.
+ * 
+ * @param [in] text - pointer to the text to destroy.
+*/
 void DestroyText(Text* text);
 
+/**
+ * @brief Sorts text's lines. Uses quick sort.
+ * 
+ * @param [in] text - the text lines of which are to be sorted.
+ * @param [in] sortType - the way to compare lines.
+*/
 void SortTextLines(Text* text, StringCompareMethod sortType);
 
-void PrintRawText(const Text* text);
+/**
+ * @brief Prints raw text form text to a file.
+ * 
+ * @param [in] text - what to write.
+ * @param [in, out] file - where to write.
+*/
+void PrintRawText(const Text* text, FILE* file);
 
-void PrintTextLines(const Text* text);
+/**
+ * @brief Prints text's line to file, ignoring \\n's.
+ * 
+ * @param[in] text - what to write.
+ * @param [in, out] file - where to write.
+*/
+void PrintTextLines(const Text* text, FILE* file);
 
 #endif

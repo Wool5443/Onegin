@@ -6,8 +6,18 @@
 #include <stddef.h>
 #include <stdio.h>
 
+/** @enum StringCompareMethod
+ * 
+ * @var StringCompareMethod::START_TO_END - compares strings starting from their beginings.
+ * @var StringCompareMethod::END_TO_START - compares strings starting from their endings.
+*/
 enum StringCompareMethod {START_TO_END, END_TO_START};
 
+/** @enum CaseOptions
+ * 
+ * @var CaseOptions::IGNORE_CASE - ignore case when comparing.
+ * @var CaseOptions::IGNORE_CASE - consider case when comparing.
+*/
 enum CaseOptions {IGNORE_CASE, MIND_CASE};
 
 /**
@@ -58,6 +68,10 @@ char* StringCat(char* destination, const char* source, size_t maxLength);
  * @brief Compares 2 strings and return which is bigger.
  *
  * @param [in] s1, s2 - strings to compare.
+ * @param [in] stringCompareMethod - enum which tells how to sort.
+ * @param [in] caseOption - enum which tells whether to ignore case.
+ * @param [in] filter - characters to ignore while comparing.
+ * @param [in] terminator - what strings end with.
  *
  * @return >0 - s1 is bigger.
  * @return 0 - equal.
@@ -110,6 +124,13 @@ char* StringFindChar(char* where, const char target);
 */
 char* StringFilter(char* string, const char* filter);
 
-void StringPrint(FILE* where, const char* string, char terminator);
+/**
+ * @brief Prints the string to file.
+ * 
+ * @param [in] file - the file to write to.
+ * @param [in] string - what to print.
+ * @param [in] terminator - what the string ends with.
+*/
+void StringPrint(FILE* file, const char* string, char terminator);
 
 #endif

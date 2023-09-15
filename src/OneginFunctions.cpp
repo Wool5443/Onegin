@@ -71,7 +71,15 @@ void PrintRawText(const Text* text, FILE* file)
     fputs(text->rawText, file);
 }
 
-void PrintTextLines(const Text* text);
+void PrintTextLines(const Text* text, FILE* file)
+{
+    for (size_t i = 0; i < text->numberOfLines; i++)
+    {
+        const char* line = text->lines[i];
+        if (*line != '\n')
+            StringPrint(file, line, '\n');
+    }
+}
 
 int _stringCompareStartToEnd(const void* s1, const void* s2)
 {

@@ -95,6 +95,9 @@ int stringCompareStartToEnd(const char* s1, const char* s2, CaseOptions caseOpti
     MyAssertHard(s1, ERROR_NULLPTR, );
     MyAssertHard(s2, ERROR_NULLPTR, );
 
+    if (s1 == s2)
+        return 0;
+
     while (*s1 != terminator && *s2 != terminator && *s1 != 0 && *s2 != 0)
     {
         if (*s1 == *s2 || (caseOption == IGNORE_CASE && tolower(*s1) == tolower(*s2)))
@@ -120,6 +123,9 @@ int stringCompareEndToStart(const char* s1, const char* s2, CaseOptions caseOpti
 {
     MyAssertHard(s1, ERROR_NULLPTR, );
     MyAssertHard(s2, ERROR_NULLPTR, );
+
+    if (s1 == s2)
+        return 0;
 
     const char* s1Arrow = s1;
     const char* s2Arrow = s2;
@@ -197,7 +203,7 @@ char* StringFind(char* where, const char* target)
 
     size_t shifts[ALPHABET_LENGTH] = {};
 
-    for (size_t i = 0; i < ArrayLength(shifts); i++)
+    for (size_t i = 0; i < ALPHABET_LENGTH; i++)
         shifts[i] = targetLength;
 
     for (size_t i = 2; i < targetLength + 1; i++)
@@ -264,12 +270,12 @@ char* StringFilter(char* string, const char* filter)
     return string;
 }
 
-void StringPrint(FILE* where, const char* string, char terminator)
+void StringPrint(FILE* file, const char* string, char terminator)
 {
     MyAssertHard(string, ERROR_NULLPTR, );
-    MyAssertHard(where, ERROR_BAD_FILE, );
+    MyAssertHard(file, ERROR_BAD_FILE, );
 
     while (*string != terminator && *string != 0)
-        putc(*string++, where);
-    putc('\n', where);
+        putc(*string++, file);
+    putc('\n', file);
 }

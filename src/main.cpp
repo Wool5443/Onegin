@@ -7,37 +7,35 @@
 #include "StringFunctions.hpp"
 #include "Utils.hpp"
 
-
-int main(void)
+int main(const int argc, const char* const* argv)
 {
-    const char HAMLET_PATH[] = "hamlet.txt";
+    if (argc < 3)
+    {
+        printf("Enter input and output paths!\n");
+        return -1;
+    }
 
-    Text hamlet = CreateText(HAMLET_PATH);
-    FILE* out = fopen("out.txt", "w");
+    Text hamlet = CreateText(argv[1]);
+    FILE* out = fopen(argv[2], "w");
 
+    clock_t start = clock();
     SortTextLines(&hamlet, START_TO_END);
+    printf("Sorting took %g seconds\n", ((double)(clock() - start)) / CLOCKS_PER_SEC);
 
-    fputs("[Alphabetic sort start to end]\n\n", out);
+    fputs("[Alphabetic sort Start To End.]\n\n", out);
+    PrintTextLines(&hamlet, out);
+    fputs("------------------------------------------------------------------------------------------\n", out);
 
-    for (size_t i = 0; i < hamlet.numberOfLines; i++)
-        if (!StringEqual(hamlet.lines[i], "\n", 1))
-            StringPrint(out, hamlet.lines[i], '\n');
-
-    fputs("-------------------------------------------------------------------------------------\n", out);
-    fputs("[Alphabetic sort end to start]\n\n", out);
-
-    clock_t t = clock();
+    start = clock();
     SortTextLines(&hamlet, END_TO_START);
-    printf("Sorting took %g seconds\n", (double)(clock() - t) / CLOCKS_PER_SEC);
+    printf("Sorting took %g seconds\n", ((double)(clock() - start)) / CLOCKS_PER_SEC);
 
-    for (size_t i = 0; i < hamlet.numberOfLines; i++)
-        if (!StringEqual(hamlet.lines[i], "\n", 1))
-            StringPrint(out, hamlet.lines[i], '\n');
-            
-    fputs("-------------------------------------------------------------------------------------\n", out);
-    fputs("[Original text]\n\n", out);
+    fputs("[Alphabetic sort End To Start.]\n\n", out);
+    PrintTextLines(&hamlet, out);
+    fputs("------------------------------------------------------------------------------------------\n", out);
 
-    fputs(hamlet.rawText, out);
+    fputs("[Original text.]\n\n", out);
+    PrintRawText(&hamlet, out);
 
     DestroyText(&hamlet);
     fclose(out);
