@@ -27,9 +27,9 @@ Text CreateText(const char* path)
     
     char* rawText = (char*)calloc(text.size + 1, sizeof(char));
 
-    FILE* file = fopen(path, "r");
+    FILE* file = fopen(path, "rb");
     MyAssertHard(file, ERROR_BAD_FILE, );
-    fread(rawText, sizeof(char), text.size, file);
+    MyAssertHard(text.size == fread(rawText, sizeof(char), text.size, file), ERROR_BAD_FILE, );
     fclose(file); 
 
     rawText[text.size] = '\0';

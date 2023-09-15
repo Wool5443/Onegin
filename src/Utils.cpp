@@ -14,9 +14,9 @@ void quickSort(void* start, void* end, size_t elementSize, CompareFunction_t* co
 
 void* partion(void* left, void* right, size_t elementSize, CompareFunction_t compareFunction);
 
-void sort3(void* data, size_t elementSize, CompareFunction_t compareFunction);
+void sort3Elements(void* data, size_t elementSize, CompareFunction_t compareFunction);
 
-void sort2(void* data, size_t elementSize, CompareFunction_t compareFunction);
+void sort2Elements(void* data, size_t elementSize, CompareFunction_t compareFunction);
 
 bool IsEqual(const double x1, const double x2)
 {
@@ -52,6 +52,26 @@ const void* MaxArray(const void* data, size_t elementCount, size_t elementSize, 
 	return max;	
 }
 
+/**
+ * @brief Swaps the raw bytes of a and b.
+ * 
+ * @param [in] a - pointer to the 1st object.
+ * @param [in] b - pointer to the 2nd object.
+ * @param [in] size - size of the objects.
+*/
+void Swap(void* a, void* b, size_t size)
+{
+    char* _a = (char*)a;
+    char* _b = (char*)b;
+
+    for (size_t curByte = 0; curByte < size; curByte++)
+    {
+        char _temp = _a[curByte];
+        _a[curByte] = _b[curByte];
+        _b[curByte] = _temp;
+    }
+}
+
 void Sort(void* data, size_t elementCount, size_t elementSize, CompareFunction_t* compareFunction)
 {
 	MyAssertHard(data, ERROR_NULLPTR, );
@@ -67,8 +87,8 @@ void selectionSort(void* data, size_t elementCount, size_t elementSize, CompareF
 
 	for (size_t i = 0; i < elementCount; i++)
 	{
-		const void* temp = MinArray(data + i * elementSize, elementCount - i, elementSize, compareFunction);
-		SWAP(data + i * elementSize, temp, elementSize);
+		void* temp = (void*)MinArray(data + i * elementSize, elementCount - i, elementSize, compareFunction);
+		Swap(data + i * elementSize, temp, elementSize);
 	}
 }
 
@@ -79,15 +99,16 @@ void quickSort(void* start, void* end, size_t elementSize, CompareFunction_t* co
 
 	if (end <= start)
 		return;
+	
 	size_t dataLength = (size_t)((char*)end - (char*)start) / elementSize + 1;
 
 	switch (dataLength)
 	{
 	case 2:
-		sort2(start, elementSize, compareFunction);
+		sort2Elements(start, elementSize, compareFunction);
 		return;
 	case 3:
-		sort3(start, elementSize, compareFunction);
+		sort3Elements(start, elementSize, compareFunction);
 		return;	
 	default:
 		break;
@@ -108,8 +129,11 @@ void* partion(void* start, void* end, size_t elementSize, CompareFunction_t comp
 	size_t arrayLength = ((size_t)end - (size_t)start) / elementSize + 1;
 
 	void* pivotPtr = start + ((size_t)rand() % (arrayLength - 2) + 1) * elementSize;
-	void* pivotValue = calloc(1, elementSize);
-	memmove(pivotValue, pivotPtr, elementSize);
+
+	Swap(start, pivotPtr, elementSize);
+	void* pivotValue = start;
+	start += elementSize;
+
 
 	// printf("Pivot = %d\n", *(int*)pivotValue);
 
@@ -120,11 +144,13 @@ void* partion(void* start, void* end, size_t elementSize, CompareFunction_t comp
 	{
 		int comp1 = compareFunction(left, pivotValue);
 		int comp2 = compareFunction(right, pivotValue);
+	
 		while (comp1 < 0)
 		{
 			left += elementSize;
 			comp1 = compareFunction(left, pivotValue);
 		}
+	
 		while (compareFunction(right, pivotValue) > 0) 
 		{
 			right -= elementSize;
@@ -140,31 +166,44 @@ void* partion(void* start, void* end, size_t elementSize, CompareFunction_t comp
 		if(comp1 == 0 && comp2 == 0)
 			right -= elementSize;
 		else
-			SWAP(left, right, elementSize);
+			Swap(left, right, elementSize);
 
 		// for (void* t = start; t <= end; t += elementSize)
 		// 	printf("%d ", *(int*)t);
 		// printf("\n\n");
 	}
 
-	free(pivotValue);
+	start -= elementSize;
+	Swap(pivotValue, left, elementSize);
 	return left;
 }
 
-void sort3(void* data, size_t elementSize, CompareFunction_t compareFunction)
+void sort3Elements(void* data, size_t elementSize, CompareFunction_t compareFunction)
 {
-	if (compareFunction(data, data + elementSize) > 0)
-		SWAP(data, data + elementSize, elementSize);
+	if (compareFunction(data, data + elementSize) < 0)
+	{
+		if (compareFunction(data, data + 2 * elementSize) > 0)
+			Swap(data, data + 2 * elementSize, elementSize);
+	}
+	else
+	{
+		if (compareFunction(data + elementSize, data + 2 * elementSize) < 0)
+		{
+			Swap(data, data + 1 * elementSize, elementSize);
+		}
+		else
+		{
+			Swap(data, data + 2 * elementSize, elementSize);
+		}
+	}
 	if (compareFunction(data + elementSize, data + 2 * elementSize) > 0)
-		SWAP(data + elementSize, data + 2 * elementSize, elementSize);
-	if (compareFunction(data, data + elementSize) > 0)
-		SWAP(data, data + elementSize, elementSize);
+		Swap(data + elementSize, data + 2 * elementSize, elementSize);
 }
 
-void sort2(void* data, size_t elementSize, CompareFunction_t compareFunction)
+void sort2Elements(void* data, size_t elementSize, CompareFunction_t compareFunction)
 {
 	if (compareFunction(data, data + elementSize) > 0)
-		SWAP(data, data + elementSize, elementSize);
+		Swap(data, data + elementSize, elementSize);
 }
 
 void ClearBuffer(void)

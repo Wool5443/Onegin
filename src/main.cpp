@@ -1,8 +1,6 @@
 #include <stdio.h>
-#include <sys/stat.h>
-#include <stdlib.h>
-#include <string.h>
 #include <time.h>
+
 #include "OneginFunctions.hpp"
 #include "StringFunctions.hpp"
 #include "Utils.hpp"
