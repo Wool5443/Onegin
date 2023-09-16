@@ -6,29 +6,35 @@ const int INCLUDE_NULL_TERMINATOR_FIX = 1, FOUND_STRING = -1, ALPHABET_LENGTH = 
 
 int findShift(const char* where, const char* target, const size_t place, const size_t targetLength);
 
-int stringCompareStartToEnd(const char* s1, const char* s2, CaseOptions caseOption, const char* filter, char terminator);
+int stringCompareStartToEnd(String* s1, String* s2, CaseOptions caseOption, const char* filter);
 
-int stringCompareEndToStart(const char* s1, const char* s2, CaseOptions caseOption, const char* filter, char terminator);
+int stringCompareEndToStart(String* s1, String* s2, CaseOptions caseOption, const char* filter);
 
 int checkFilter(char c, const char* filter);
 
-size_t StringLength(const char* string)
+size_t StringLength(const char* string, char terminator)
 {
     MyAssertHard(string, ERROR_NULLPTR, );
 
     size_t length = 0;
-    while (*string++ != '\0')
+    while (*string++ != terminator)
         length++;
 
     return length;
 }
 
-char* StringCopy(char* destination, const char* source, size_t maxLength)
+String CreateString(const char* text, char terminator)
+{
+    String string = {.text = text, .length = StringLength(text, terminator)};
+    return string;
+}
+
+char* StringCopy(char* destination, const char* source, size_t maxLength, char terminator)
 {
     MyAssertHard(destination, ERROR_NULLPTR, );
     MyAssertHard(source, ERROR_NULLPTR, );
 
-    size_t sourceLength = StringLength(source);
+    size_t sourceLength = StringLength(source, terminator);
     size_t numOfElToCopy = min(sourceLength, maxLength - INCLUDE_NULL_TERMINATOR_FIX);
 
     MyAssertHard(destination + maxLength <= source
@@ -39,17 +45,17 @@ char* StringCopy(char* destination, const char* source, size_t maxLength)
     for (size_t i = 0; i < numOfElToCopy; i++)
         destination[i] = source[i];
 
-    destination[numOfElToCopy] = '\0';
+    destination[numOfElToCopy] = terminator;
 
     return destination;
 }
 
-char* StringCopyAll(char* destination, const char* source)
+char* StringCopyAll(char* destination, const char* source, char terminator)
 {
     MyAssertHard(destination, ERROR_NULLPTR, );
     MyAssertHard(source, ERROR_NULLPTR, );
 
-    size_t sourceLength = StringLength(source);
+    size_t sourceLength = StringLength(source, terminator);
 
     MyAssertHard(destination + sourceLength < source
         || source + sourceLength < destination,
@@ -59,22 +65,23 @@ char* StringCopyAll(char* destination, const char* source)
     for (size_t i = 0; i < sourceLength - 1; i++)
         destination[i] = source[i];
 
-    destination[sourceLength - 1] = '\0';
+    destination[sourceLength - 1] = terminator;
 
     return destination;
 }
 
-char* StringCat(char* destination, const char* source, size_t maxLength)
+char* StringCat(char* destination, const char* source, size_t maxLength, char terminator)
 {
     MyAssertHard(destination, ERROR_NULLPTR, );
     MyAssertHard(source, ERROR_NULLPTR, );
 
-    size_t destinationLength = StringLength(destination);
+    size_t destinationLength = StringLength(destination, terminator);
 
-    return StringCopy(destination + destinationLength, source, maxLength - destinationLength) - destinationLength;
+    return StringCopy(destination + destinationLength, source, maxLength - destinationLength, terminator) - destinationLength;
 }
 
-int StringCompare(const char* s1, const char* s2, StringCompareMethod stringCompareMethod, CaseOptions caseOption, const char* filter, char terminator)
+int StringCompare(String* s1, String* s2, StringCompareMethod stringCompareMethod, 
+                  CaseOptions caseOption, const char* filter)
 {
     MyAssertHard(s1, ERROR_NULLPTR, );
     MyAssertHard(s2, ERROR_NULLPTR, );
@@ -82,63 +89,64 @@ int StringCompare(const char* s1, const char* s2, StringCompareMethod stringComp
     switch (stringCompareMethod)
     {
         case START_TO_END:
-            return stringCompareStartToEnd(s1, s2, caseOption, filter, terminator);
+            return stringCompareStartToEnd(s1, s2, caseOption, filter);
         case END_TO_START:
-            return stringCompareEndToStart(s1, s2, caseOption, filter, terminator);
+            return stringCompareEndToStart(s1, s2, caseOption, filter);
         default:
             return 0;
     }
 }
 
-int stringCompareStartToEnd(const char* s1, const char* s2, CaseOptions caseOption, const char* filter, char terminator)
+int stringCompareStartToEnd(String* s1, String* s2, CaseOptions caseOption, const char* filter)
 {
     MyAssertHard(s1, ERROR_NULLPTR, );
     MyAssertHard(s2, ERROR_NULLPTR, );
 
-    if (s1 == s2)
+    const char* s1Text = s1->text;
+    const char* s2Text = s2->text;
+
+    if (s1Text == s2Text)
         return 0;
 
-    while (*s1 != terminator && *s2 != terminator && *s1 != 0 && *s2 != 0)
+    const char* const s1End = s1Text + s1->length;
+    const char* const s2End = s2Text + s2->length;
+
+    while (s1Text < s1End && s2Text < s2End)
     {
-        if (*s1 == *s2 || (caseOption == IGNORE_CASE && tolower(*s1) == tolower(*s2)))
+        if (*s1Text == *s2Text || (caseOption == IGNORE_CASE && tolower(*s1Text) == tolower(*s2Text)))
         {
-            s1++;
-            s2++;
+            s1Text++;
+            s2Text++;
             continue;
         }
-        int checkS1 = checkFilter(*s1, filter);
-        int checkS2 = checkFilter(*s2, filter);
+        int checkS1 = checkFilter(*s1Text, filter);
+        int checkS2 = checkFilter(*s2Text, filter);
 
         if (checkS1 && checkS2)
             break;
             
-        s1 += !checkS1;
-        s2 += !checkS2;
+        s1Text += !checkS1;
+        s2Text += !checkS2;
     }
 
-    return caseOption == IGNORE_CASE ? tolower(*s1) - tolower(*s2) : *s1 - *s2;
+    return caseOption == IGNORE_CASE ? tolower(*s1Text) - tolower(*s2Text) : *s1Text - *s2Text;
 }
 
-int stringCompareEndToStart(const char* s1, const char* s2, CaseOptions caseOption, const char* filter, char terminator)
+int stringCompareEndToStart(String* s1, String* s2, CaseOptions caseOption, const char* filter)
 {
     MyAssertHard(s1, ERROR_NULLPTR, );
     MyAssertHard(s2, ERROR_NULLPTR, );
 
-    if (s1 == s2)
+    const char* s1Text = s1->text;
+    const char* s2Text = s2->text;
+
+    if (s1Text == s2Text)
         return 0;
 
-    const char* s1Arrow = s1;
-    const char* s2Arrow = s2;
+    const char* s1Arrow = s1Text + s1->length - 1;
+    const char* s2Arrow = s2Text + s2->length - 1;
 
-    while (*s1Arrow != terminator && *s1Arrow != 0)
-        s1Arrow++;
-    while (*s2Arrow != terminator && *s2Arrow != 0)
-        s2Arrow++;
-
-    s1Arrow--;
-    s2Arrow--;
-
-    while (s1Arrow >= s1 && s2Arrow >= s2)
+    while (s1Arrow >= s1Text && s2Arrow >= s2Text)
     {
         if (*s1Arrow == *s2Arrow || (caseOption == IGNORE_CASE && tolower(*s1Arrow) == tolower(*s2Arrow)))
         {
@@ -173,13 +181,13 @@ int checkFilter(char c, const char* filter)
     return 1;         // to stay
 }
 
-bool StringEqual(const char* s1, const char* s2, const size_t length)
+bool StringEqual(const char* s1, const char* s2, const size_t length, char terminator)
 {
     MyAssertHard(s2, ERROR_NULLPTR, );
     MyAssertHard(s1, ERROR_NULLPTR, );
 
-    size_t s1Length = StringLength(s1);
-    size_t s2Length = StringLength(s2);
+    size_t s1Length = StringLength(s1, terminator);
+    size_t s2Length = StringLength(s2, terminator);
 
     if (s1Length < length || s2Length < length)
         return false;
@@ -191,13 +199,13 @@ bool StringEqual(const char* s1, const char* s2, const size_t length)
     return true;
 }
 
-char* StringFind(char* where, const char* target)
+char* StringFind(char* where, const char* target, char terminator)
 {
     MyAssertHard(where, ERROR_NULLPTR, );
     MyAssertHard(target, ERROR_NULLPTR, );
 
-    size_t whereLength = StringLength(where);
-    size_t targetLength = StringLength(target);
+    size_t whereLength = StringLength(where, terminator);
+    size_t targetLength = StringLength(target, terminator);
     if (whereLength < targetLength)
         return NULL;
 
@@ -236,11 +244,11 @@ int findShift(const char* where, const char* target, const size_t place, const s
     return FOUND_STRING;
 }
 
-char* StringFindChar(char* where, const char target)
+char* StringFindChar(char* where, const char target, char terminator)
 {
     MyAssertHard(where, ERROR_NULLPTR, );
 
-    while (*where != '\0')
+    while (*where != terminator)
     {
         if (*where == target)
             return where;
@@ -250,7 +258,7 @@ char* StringFindChar(char* where, const char target)
     return NULL;
 }
 
-char* StringFilter(char* string, const char* filter)
+char* StringFilter(char* string, const char* filter, char terminator)
 {
     MyAssertHard(string, ERROR_NULLPTR, );
     MyAssertHard(filter, ERROR_NULLPTR, );
@@ -258,7 +266,7 @@ char* StringFilter(char* string, const char* filter)
     const char* readPtr = string;
     char* writePtr = string;
 
-    while (*readPtr != 0 && *readPtr != '\n')
+    while (*readPtr != terminator)
     {
         char c = *readPtr++;
 

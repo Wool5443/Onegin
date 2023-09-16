@@ -1,3 +1,5 @@
+//! @file
+
 #ifndef ONEGIN_FUNCTIONS_HPP
 #define ONEGIN_FUNCTIONS_HPP
 
@@ -20,7 +22,7 @@ static const char* const IGNORED_SYMBOLS = " ,.;:'\"-!?`~()[]{}";
 struct Text
 {
     const char* rawText;
-    const char* const* lines;
+    const String* lines;
     size_t size;
     size_t numberOfLines;
 };
@@ -32,7 +34,7 @@ struct Text
  * 
  * @return Text.
 */
-Text CreateText(const char* path);
+Text CreateText(const char* path, char terminator);
 
 /**
  * @brief Frees all text's memory.

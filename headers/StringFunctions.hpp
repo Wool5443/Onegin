@@ -6,6 +6,18 @@
 #include <stddef.h>
 #include <stdio.h>
 
+/** @struct String
+ * @brief Represents a cons string with its length.
+ * 
+ * @var String::text - data.
+ * @var String::length - length of the string.
+*/
+struct String
+{
+    const char* text;
+    size_t length;
+};
+
 /** @enum StringCompareMethod
  * 
  * @var StringCompareMethod::START_TO_END - compares strings starting from their beginings.
@@ -24,10 +36,20 @@ enum CaseOptions {IGNORE_CASE, MIND_CASE};
  * @brief Counts the lenght of a null terminated string.
  *
  * @param [in] string - the string to find the length of.
+ * 
+ * @param [in] terminator - what the strings ends with.
  *
  * @return size_t length of the string.
 */
-size_t StringLength(const char* string);
+size_t StringLength(const char* string, char terminator);
+
+/**
+ * @brief Creates a String terminating with the terminator.
+ * 
+ * @param [in] text - the text for the String.
+ * @param [in] terminator - what the string ends with.
+*/
+String CreateString(const char* text, char terminator);
 
 /**
  * @brief Copies the source to the destination.
@@ -36,10 +58,11 @@ size_t StringLength(const char* string);
  * @param [in, out] destination - where to copy.
  * @param [in] source - from where to copy.
  * @param [in] maxLength - how many elements destination can store.
+ * @param [in] terminator - what the string ends with.
  *
  * @return char* to destination.
 */
-char* StringCopy(char* destination, const char* source, size_t maxLength);
+char* StringCopy(char* destination, const char* source, size_t maxLength, char terminator);
 
 /**
  * @brief Copies the entire source into destination.
@@ -47,10 +70,11 @@ char* StringCopy(char* destination, const char* source, size_t maxLength);
  *
  * @param [in, out] destination - where to copy.
  * @param [in] source - from where to copy.
- *
+ * @param [in] terminator - what the string ends with.
+ * 
  * @return char* to destination.
 */
-char* StringCopyAll(char* destination, const char* source);
+char* StringCopyAll(char* destination, const char* source, char terminator);
 
 /**
  * @brief Concatinate destination and source.
@@ -59,10 +83,11 @@ char* StringCopyAll(char* destination, const char* source);
  * @param [in, out] destination - the string to append to.
  * @param [in] source - from where to append.
  * @param [in] maxLength - destination size.
+ * @param [in] terminator - what the string ends with.
  *
  * @return char* to destination.
 */
-char* StringCat(char* destination, const char* source, size_t maxLength);
+char* StringCat(char* destination, const char* source, size_t maxLength, char terminator);
 
 /**
  * @brief Compares 2 strings and return which is bigger.
@@ -77,20 +102,21 @@ char* StringCat(char* destination, const char* source, size_t maxLength);
  * @return 0 - equal.
  * @return <0 - s2 is bigger.
 */
-int StringCompare(const char* s1, const char* s2, 
+int StringCompare(String* s1, String* s2, 
                   StringCompareMethod stringCompareMethod,
-                  CaseOptions caseOption, const char* filter, char terminator);
+                  CaseOptions caseOption, const char* filter);
 
 /**
  * @brief Compares length elements of the strings and returns if they are equal.
  *
  * @param [in] s1, s2 - the strings to compare.
  * @param [in] length - the amount of characters to compare.
+ * @param [in] terminator - what the strings end with.
  *
  * @return true - equal.
  * @return false - inequal.
 */
-bool StringEqual(const char* s1, const char* s2, const size_t length);
+bool StringEqual(const char* s1, const char* s2, const size_t length, char terminator);
 
 /**
  * @brief Finds the target substring in where and returns the pointer to it in where.
@@ -99,30 +125,33 @@ bool StringEqual(const char* s1, const char* s2, const size_t length);
  *
  * @param [in] where - the string to find in.
  * @param [in] target - the string to find.
+ * @param [in] terminator - what the string ends with.
  *
  * @return char* to the target substring in destination.
 */
-char* StringFind(char* where, const char* target);
+char* StringFind(char* where, const char* target, char terminator);
 
 /**
  * @brief Finds char target in where and return a pointer to its location.
  *
  * @param [in] where - the string to find the target in.
  * @param [in] target - the char to find.
+ * @param [in] terminator - what the string ends with.
  *
  * @return char* to the first occurence of target in where.
 */
-char* StringFindChar(char* where, const char target);
+char* StringFindChar(char* where, const char target, char terminator);
 
 /**
  * @brief filters all filter chars in string.
  * 
  * @param [in, out] string - the string to filter.
  * @param [in] filter - the chats to filter out.
+ * @param [in] terminator - what the string ends with.
  * 
  * @return char* to the string.
 */
-char* StringFilter(char* string, const char* filter);
+char* StringFilter(char* string, const char* filter, char terminator);
 
 /**
  * @brief Prints the string to file.

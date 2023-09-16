@@ -21,7 +21,7 @@ int main(const int argc, const char* const* argv)
         return -1;
     }
 
-    Text hamlet = CreateText(argv[1]);
+    Text hamlet = CreateText(argv[1], '\n');
     FILE* out = fopen(argv[2], "w");
 
     clock_t start = clock();

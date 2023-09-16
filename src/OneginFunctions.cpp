@@ -11,13 +11,13 @@ size_t getFileSize(const char* path);
 
 size_t countLines(const char* string);
 
-const char* const* split(const char* string, size_t numOfLines);
+const String* split(const char* string, size_t numOfLines, char terminator);
 
 int _stringCompareStartToEnd(const void* s1, const void* s2);
 
 int _stringCompareEndToStart(const void* s1, const void* s2);
 
-Text CreateText(const char* path)
+Text CreateText(const char* path, char terminator)
 {
     MyAssertHard(path, ERROR_NULLPTR, );
 
@@ -38,7 +38,7 @@ Text CreateText(const char* path)
 
     text.numberOfLines = countLines(rawText);
 
-    text.lines = split(rawText, text.numberOfLines);
+    text.lines = split(text.rawText, text.numberOfLines, terminator);
 
     return text;
 }
@@ -75,7 +75,7 @@ void PrintTextLines(const Text* text, FILE* file)
 {
     for (size_t i = 0; i < text->numberOfLines; i++)
     {
-        const char* line = text->lines[i];
+        const char* line = text->lines[i].text;
         if (*line != '\n')
             StringPrint(file, line, '\n');
     }
@@ -83,12 +83,12 @@ void PrintTextLines(const Text* text, FILE* file)
 
 int _stringCompareStartToEnd(const void* s1, const void* s2)
 {
-    return StringCompare(*(const char* const*)s1, *(const char* const*)s2, START_TO_END, IGNORE_CASE, IGNORED_SYMBOLS, '\n');
+    return StringCompare((String*)s1, (String*)s2, START_TO_END, IGNORE_CASE, IGNORED_SYMBOLS);
 }
 
 int _stringCompareEndToStart(const void* s1, const void* s2)
 {
-    return StringCompare(*(const char* const*)s1, *(const char* const*)s2, END_TO_START, IGNORE_CASE, IGNORED_SYMBOLS, '\n');
+    return StringCompare((String*)s1, (String*)s2, END_TO_START, IGNORE_CASE, IGNORED_SYMBOLS);
 }
 
 size_t getFileSize(const char* path)
@@ -115,25 +115,29 @@ size_t countLines(const char* string)
     return lines;
 }
 
-const char* const* split(const char* string, size_t numOfLines)
+const String* split(const char* string, size_t numOfLines, char terminator)
 {
     MyAssertHard(string, ERROR_NULLPTR, );
 
-    const char** lines = (const char**)calloc(numOfLines, sizeof(lines[0]));
+    String* textLines = (String*)calloc(numOfLines, sizeof(textLines[0]));
 
-    MyAssertHard(lines, ERROR_NO_MEMORY, );
+    MyAssertHard(textLines, ERROR_NO_MEMORY, );
 
-    lines[0] = string;
+    const char* endCurLine = strchr(string, terminator);
 
-    const char* endCurLine = strchr(string, '\n');
+    textLines[0] = {.text = string,
+                    .length = (size_t)(endCurLine - string)};
+
     size_t i = 1;
 
     while (endCurLine)
     {
-        lines[i] = endCurLine + 1;
-        endCurLine = strchr(endCurLine + 1, '\n');
+        textLines[i] = {};
+        textLines[i].text = endCurLine + 1;
+        endCurLine = strchr(endCurLine + 1, terminator);
+        textLines[i].length = endCurLine ? (size_t)(endCurLine - textLines[i].text) : 0;
         i++;
     }
 
-    return (const char* const*)lines;
+    return (const String*)textLines;
 }

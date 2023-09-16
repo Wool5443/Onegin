@@ -52,13 +52,6 @@ const void* MaxArray(const void* data, size_t elementCount, size_t elementSize, 
 	return max;	
 }
 
-/**
- * @brief Swaps the raw bytes of a and b.
- * 
- * @param [in] a - pointer to the 1st object.
- * @param [in] b - pointer to the 2nd object.
- * @param [in] size - size of the objects.
-*/
 void Swap(void* a, void* b, size_t size)
 {
     char* _a = (char*)a;
@@ -129,7 +122,8 @@ void* partition(void* start, void* end, size_t elementSize, CompareFunction_t co
 	srand((unsigned int)time(NULL));
 	size_t arrayLength = ((size_t)end - (size_t)start) / elementSize + 1;
 
-	void* pivotPtr = start + arrayLength / 2 * elementSize;
+	// void* pivotPtr = start + arrayLength / 2 * elementSize;
+	void* pivotPtr = start + ((size_t)rand() % (arrayLength - 2) + 1) * elementSize;
 
 #ifdef TESTING
 	SetConsoleColor(stdout, RED);
@@ -201,7 +195,7 @@ void* partition(void* start, void* end, size_t elementSize, CompareFunction_t co
 
 	start -= elementSize;
 
-	if (comp1 > 0)
+	if (comp1 >= 0)
 		pivotPtr = left - elementSize;
 	else
 		pivotPtr = left;
