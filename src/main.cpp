@@ -5,13 +5,16 @@
 #include "StringFunctions.hpp"
 #include "Utils.hpp"
 
-// int intC(const void* a, const void* b)
-// {
-//     return *(int*)a - *(int*)b;
-// }
+#ifdef TESTING
+int intC(const void* a, const void* b)
+{
+    return *(int*)a - *(int*)b;
+}
+#endif
 
 int main(const int argc, const char* const* argv)
 {
+#ifndef TESTING
     if (argc < 3)
     {
         printf("Enter input and output paths!\n");
@@ -42,18 +45,18 @@ int main(const int argc, const char* const* argv)
 
     DestroyText(&hamlet);
     fclose(out);
-    // for (int i = 0; i < 100; i++)
-    // {
-    // int a[] = {5, 6, 1, 2, 7, 7, 7};
-    // size_t n = 7;
+#else
+    for (int k = 0; k < 1; k++)
+    {
+        int a[] = {5, 3, 1, 5, 8, 6, 3, 1};
+        size_t n = sizeof(a) / sizeof(a[0]);
 
-    // Sort(a, n, 4, intC);
+        Sort(a, n, 4, intC);
 
-    // for (size_t i = 0; i < n; i++)
-    //     printf("%d ", a[i]);
-    // puts("");
-    // printf("1 2 5 6 7 7 7\n\n");
-    // }
-
+        for (size_t i = 0; i < n; i++)
+            printf("%d ", a[i]);
+        puts("");
+    }
+#endif
     return 0;
 }

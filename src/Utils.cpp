@@ -129,27 +129,30 @@ void* partition(void* start, void* end, size_t elementSize, CompareFunction_t co
 	srand((unsigned int)time(NULL));
 	size_t arrayLength = ((size_t)end - (size_t)start) / elementSize + 1;
 
-	void* pivotPtr = start + ((size_t)rand() % arrayLength) * elementSize;
+	void* pivotPtr = start + arrayLength / 2 * elementSize;
 
-	void* pivotValue = calloc(1, elementSize);
-	memmove(pivotValue, pivotPtr, elementSize);
+#ifdef TESTING
+	SetConsoleColor(stdout, RED);
+	printf("Pivot = %d\n", *(int*)pivotPtr);
+	SetConsoleColor(stdout, WHITE);
 
-	// printf("Pivot = %d\n", *(int*)pivotPtr);
+	for (void* t = start; t <= end; t += elementSize)
+		printf("%d ", *(int*)t);
+	printf("\n\n");
+#endif
 
-	// for (void* t = start; t <= end; t += elementSize)
-	// 	printf("%d ", *(int*)t);
-	// printf("\n\n");
-
-	// Swap(start, pivotPtr, elementSize);
-	// void* pivotValue = start;
+	Swap(start, pivotPtr, elementSize);
+	void* pivotValue = start;
+	start += elementSize;
 
 	void* left  = start;
 	void* right = end;
 
+	int comp1 = 0, comp2 = 0;
 	while (left < right)
 	{
-		int comp1 = compareFunction(left,  pivotValue);
-		int comp2 = compareFunction(right, pivotValue);
+	    comp1 = compareFunction(left,  pivotValue);
+		comp2 = compareFunction(right, pivotValue);
 	
 		while (comp1 < 0 && left < right)
 		{
@@ -163,41 +166,63 @@ void* partition(void* start, void* end, size_t elementSize, CompareFunction_t co
 			comp2 = compareFunction(right, pivotValue);
 		}
 
-		// printf("Left = %d Right = %d\n", *(int*)left, *(int*)right);
+#ifdef TESTING
+		SetConsoleColor(stdout, GREEN);
+		for (void* t = start; t <= end; t += elementSize)
+			printf("%zu ", ((size_t)t - (size_t)start) / elementSize);
+		SetConsoleColor(stdout, WHITE);
+		printf("\n");
 
-		// for (void* t = start; t <= end; t += elementSize)
-		// 	printf("%d ", *(int*)t);
-		// printf("\n");
+		for (void* t = start; t <= end; t += elementSize)
+			printf("%d ", *(int*)t);
+		printf("\n");
+
+		printf("Left = %d, i =  %zu Right = %d, i = %zu\n", *(int*)left,  ((size_t)left  - (size_t)start) / elementSize,
+													        *(int*)right, ((size_t)right - (size_t)start) / elementSize);
+#endif
 
 		if(comp1 == 0 && comp2 == 0)
 			right -= elementSize;
 		else
 			Swap(left, right, elementSize);
 
-		// for (void* t = start; t <= end; t += elementSize)
-		// 	printf("%d ", *(int*)t);
-		// printf("\n\n");
+#ifdef TESTING
+		SetConsoleColor(stdout, GREEN);
+		for (void* t = start; t <= end; t += elementSize)
+			printf("%zu ", ((size_t)t - (size_t)start) / elementSize);
+		SetConsoleColor(stdout, WHITE);
+		printf("\n");
+
+		for (void* t = start; t <= end; t += elementSize)
+			printf("%d ", *(int*)t);
+		printf("\n\n");
+#endif
 	}
 
-	// if (compareFunction(left, pivotValue) > 0)
-	// {
-	// 	Swap(pivotValue, left - elementSize, elementSize);
-	// 	return left - elementSize;
-	// }
-	// Swap(pivotValue, right + elementSize, elementSize);
-	// return left + elementSize;
+	start -= elementSize;
 
-	// Swap(pivotValue, left - elementSize, elementSize);
+	if (comp1 > 0)
+		pivotPtr = left - elementSize;
+	else
+		pivotPtr = left;
 
-	free(pivotValue);
+	Swap(pivotValue, pivotPtr, elementSize);
 
-	return left;
+#ifdef TESTING
+	SetConsoleColor(stdout, GREEN);
+	for (void* t = start; t <= end; t += elementSize)
+		printf("%zu ", ((size_t)t - (size_t)start) / elementSize);
+	printf("\n");
+	SetConsoleColor(stdout, WHITE);
 
-	// for (void* t = start; t <= end; t += elementSize)
-	// 	printf("%d ", *(int*)t);
-	// printf("\n\n");
+
+	for (void* t = start; t <= end; t += elementSize)
+		printf("%d ", *(int*)t);
+	printf("\n\n");
+#endif
+
+	return pivotPtr;
 }
-
 void sort3Elements(void* data, size_t elementSize, CompareFunction_t compareFunction)
 {
 	if (compareFunction(data, data + elementSize) < 0)

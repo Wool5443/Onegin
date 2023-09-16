@@ -6,6 +6,8 @@
 #include <stdio.h>
 #include <stdlib.h>
 
+#define TESTINGs
+
 /**
  * @brief Represents colors for @see SetConsoleColor
  */
