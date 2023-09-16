@@ -42,7 +42,8 @@ int main(const int argc, const char* const* argv)
 
     DestroyText(&hamlet);
     fclose(out);
-
+    // for (int i = 0; i < 100; i++)
+    // {
     // int a[] = {5, 6, 1, 2, 7, 7, 7};
     // size_t n = 7;
 
@@ -51,6 +52,8 @@ int main(const int argc, const char* const* argv)
     // for (size_t i = 0; i < n; i++)
     //     printf("%d ", a[i]);
     // puts("");
+    // printf("1 2 5 6 7 7 7\n\n");
+    // }
 
     return 0;
 }

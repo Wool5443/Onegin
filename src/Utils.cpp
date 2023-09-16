@@ -78,6 +78,7 @@ void Sort(void* data, size_t elementCount, size_t elementSize, CompareFunction_t
 	MyAssertHard(compareFunction, ERROR_NO_COMPARATOR, );
 
 	quickSort(data, data + (elementCount - 1) * elementSize, elementSize, compareFunction);
+	// selectionSort(data, elementCount, elementSize, compareFunction);
 }
 
 void selectionSort(void* data, size_t elementCount, size_t elementSize, CompareFunction_t* compareFunction)
@@ -130,15 +131,17 @@ void* partition(void* start, void* end, size_t elementSize, CompareFunction_t co
 
 	void* pivotPtr = start + ((size_t)rand() % arrayLength) * elementSize;
 
+	void* pivotValue = calloc(1, elementSize);
+	memmove(pivotValue, pivotPtr, elementSize);
+
 	// printf("Pivot = %d\n", *(int*)pivotPtr);
 
 	// for (void* t = start; t <= end; t += elementSize)
 	// 	printf("%d ", *(int*)t);
 	// printf("\n\n");
 
-	Swap(start, pivotPtr, elementSize);
-	void* pivotValue = start;
-	start += elementSize;
+	// Swap(start, pivotPtr, elementSize);
+	// void* pivotValue = start;
 
 	void* left  = start;
 	void* right = end;
@@ -176,14 +179,23 @@ void* partition(void* start, void* end, size_t elementSize, CompareFunction_t co
 		// printf("\n\n");
 	}
 
-	start -= elementSize;
-	Swap(pivotValue, left - elementSize, elementSize);
+	// if (compareFunction(left, pivotValue) > 0)
+	// {
+	// 	Swap(pivotValue, left - elementSize, elementSize);
+	// 	return left - elementSize;
+	// }
+	// Swap(pivotValue, right + elementSize, elementSize);
+	// return left + elementSize;
+
+	// Swap(pivotValue, left - elementSize, elementSize);
+
+	free(pivotValue);
+
+	return left;
 
 	// for (void* t = start; t <= end; t += elementSize)
 	// 	printf("%d ", *(int*)t);
 	// printf("\n\n");
-
-	return left - elementSize;
 }
 
 void sort3Elements(void* data, size_t elementSize, CompareFunction_t compareFunction)
