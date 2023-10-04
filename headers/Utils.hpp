@@ -5,10 +5,11 @@
 
 #include <stdio.h>
 #include <stdlib.h>
+#include <stdint.h>
 
 #define TESTINGs
 
-/**
+/** @enum Color
  * @brief Represents colors for @see SetConsoleColor
  */
 enum Color { RED, GREEN, WHITE };
@@ -19,7 +20,15 @@ enum Color { RED, GREEN, WHITE };
 enum ErrorCode 
 {
   EVERYTHING_FINE = 0, ERROR_NULLPTR, ERROR_BAD_NUMBER, ERROR_BAD_FILE, ERROR_OVERLAP,
-  ERROR_INDEX_OUT_OF_BOUNDS, ERROR_NO_MEMORY, ERROR_NO_COMPARATOR
+  ERROR_INDEX_OUT_OF_BOUNDS, ERROR_NO_MEMORY, ERROR_NO_COMPARATOR, ERROR_BAD_SIZE,
+  ERROR_BAD_VALUE, ERROR_DEAD_CANARY, ERROR_BAD_HASH
+};
+
+static const char* ERROR_CODE_NAMES[] =
+{
+  "EVERYTHING_FINE", "ERROR_NULLPTR", "ERROR_BAD_NUMBER", "ERROR_BAD_FILE", "ERROR_OVERLAP",
+  "ERROR_INDEX_OUT_OF_BOUNDS", "ERROR_NO_MEMORY", "ERROR_NO_COMPARATOR", "ERROR_BAD_SIZE",
+  "ERROR_BAD_VALUE", "ERROR_DEAD_CANARY", "ERROR_BAD_HASH"
 };
 
 /**
@@ -28,7 +37,7 @@ enum ErrorCode
 typedef int CompareFunction_t(const void* a, const void* b);
 
 /**
- * @brief Hard assert which tells the file, function and line where the error occured.
+ * @brief Hard assert which tells the file, function and line where the error occurred.
  *
  * @param [in] STATEMENT - the condition to check.
  * @param [in] ERR_CODE - what can happen @see ErrorCode.
@@ -36,14 +45,40 @@ typedef int CompareFunction_t(const void* a, const void* b);
  *
  * @note If there is nothing to perform pass nothing.
  */
-#define MyAssertHard(STATEMENT, ERR_CODE, EXIT_CMD)                                                                 \
+#define MyAssertHard(STATEMENT, ERR_CODE, ...)                                                                      \
 if (!(STATEMENT))                                                                                                   \
 do {                                                                                                                \
     SetConsoleColor(stderr, RED);                                                                                   \
     fprintf(stderr, "%s in %s in %s in line: %d\n", #ERR_CODE, __FILE__, __PRETTY_FUNCTION__, __LINE__);            \
     SetConsoleColor(stderr, WHITE);                                                                                 \
-    EXIT_CMD;                                                                                                       \
+    __VA_ARGS__;                                                                                                    \
     exit(ERR_CODE);                                                                                                 \
+} while(0);
+
+/**
+ * @brief Transforms a given name into a string.
+ * 
+ * @param [in] VALUE - the thing to transform.
+*/
+#define ValueToString(VALUE) #VALUE
+
+/**
+ * @brief Soft assert which tells the file, function and line where the error occurred.
+ *
+ * @param [in] STATEMENT - the condition to check.
+ * @param [in] ERR_CODE - what can happen @see ErrorCode.
+ * @param [in] EXIT_CMD - operation to perform before exiting the program.
+ *
+ * @note If there is nothing to perform pass nothing.
+ */
+#define MyAssertSoft(STATEMENT, ERR_CODE, ...)                                                                      \
+if (!(STATEMENT))                                                                                                   \
+do {                                                                                                                \
+    SetConsoleColor(stderr, RED);                                                                                   \
+    fprintf(stderr, "%s in %s in %s in line: %d\n", #ERR_CODE, __FILE__, __PRETTY_FUNCTION__, __LINE__);            \
+    SetConsoleColor(stderr, WHITE);                                                                                 \
+    __VA_ARGS__;                                                                                                    \
+    return ERR_CODE;                                                                                                \
 } while(0);
 
 /**
@@ -62,7 +97,21 @@ do {                                                                            
 ({                                                                                                                  \
     __typeof__(x) _tx = x; __typeof__(y) _ty = y;                                                                   \
     _tx < _ty ? _tx : _ty;                                                                                          \
-})                                                                                         \
+})                                                                                                                  \
+
+/**
+ * @brief Struct to contain where some variable was created.
+ * 
+ * @var Owner::fileName - the file where the variable was created.
+ * @var Owner::line - the line where it was created.
+ * @var Owner::name - the name of the variable.
+*/
+struct Owner
+{
+    const char* fileName;
+    size_t line;
+    const char* name;
+};
 
 /**
  * @brief Tells if 2 doubles are equal.
@@ -90,9 +139,9 @@ void CopyArray(double destination[], double source[], int length);
  * @param [in] data - the array to find min in.
  * @param [in] elementCount - length of the array.
  * @param [in] elementSize - size in bytes of the elements.
- * @param [in] compareFuntion - @see CompareFunction_t - the comparator.
+ * @param [in] compareFunction - @see CompareFunction_t - the comparator.
  * 
- * @return const void* the the smalles element.
+ * @return const void* the the smallest element.
 */
 const void* MinArray(const void* data, size_t elementCount, size_t elementSize, CompareFunction_t* compareFunction);
 
@@ -102,7 +151,7 @@ const void* MinArray(const void* data, size_t elementCount, size_t elementSize, 
  * @param [in] data - the array to find max in.
  * @param [in] elementCount - length of the array.
  * @param [in] elementSize - size in bytes of the elements.
- * @param [in] compareFuntion - @see CompareFunction_t - the comparator.
+ * @param [in] compareFunction - @see CompareFunction_t - the comparator.
  * 
  * @return const void* the the largest element.
 */
@@ -148,5 +197,7 @@ bool CheckInput(void);
  * @param color - @see Color
  */
 void SetConsoleColor(FILE* place, const enum Color color);
+
+unsigned int CalculateHash(const void *key, size_t len, unsigned int seed);
 
 #endif
