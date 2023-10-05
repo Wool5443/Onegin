@@ -7,7 +7,7 @@
 #include "StringFunctions.hpp"
 
 /**
- * @brief Charachters to ignore in texts.
+ * @brief Characters to ignore in texts.
 */
 static const char* const IGNORED_SYMBOLS = " ,.;:'\"-!?`~()[]{}";
 
