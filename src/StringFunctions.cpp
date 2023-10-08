@@ -1,6 +1,7 @@
 #include <ctype.h>
 #include "StringFunctions.hpp"
 #include "Utils.hpp"
+#include "MinMax.hpp"
 
 const int INCLUDE_NULL_TERMINATOR_FIX = 1, FOUND_STRING = -1, ALPHABET_LENGTH = 256;
 

@@ -7,7 +7,7 @@
 #include <stdio.h>
 
 /** @struct String
- * @brief Represents a cons string with its length.
+ * @brief Represents a const string with its length.
  * 
  * @var String::text - data.
  * @var String::length - length of the string.
@@ -20,7 +20,7 @@ struct String
 
 /** @enum StringCompareMethod
  * 
- * @var StringCompareMethod::START_TO_END - compares strings starting from their beginings.
+ * @var StringCompareMethod::START_TO_END - compares strings starting from their beginnings.
  * @var StringCompareMethod::END_TO_START - compares strings starting from their endings.
 */
 enum StringCompareMethod {START_TO_END, END_TO_START};
@@ -33,7 +33,7 @@ enum StringCompareMethod {START_TO_END, END_TO_START};
 enum CaseOptions {IGNORE_CASE, MIND_CASE};
 
 /**
- * @brief Counts the lenght of a null terminated string.
+ * @brief Counts the length of a null terminated string.
  *
  * @param [in] string - the string to find the length of.
  * 
@@ -53,7 +53,7 @@ String CreateString(const char* text, char terminator);
 
 /**
  * @brief Copies the source to the destination.
- * Safe becuase destination length must be given.
+ * Safe because destination length must be given.
  *
  * @param [in, out] destination - where to copy.
  * @param [in] source - from where to copy.
@@ -77,8 +77,8 @@ char* StringCopy(char* destination, const char* source, size_t maxLength, char t
 char* StringCopyAll(char* destination, const char* source, char terminator);
 
 /**
- * @brief Concatinate destination and source.
- * Safe becuase length of destination is given.
+ * @brief Concatenate destination and source.
+ * Safe because length of destination is given.
  *
  * @param [in, out] destination - the string to append to.
  * @param [in] source - from where to append.
@@ -114,7 +114,7 @@ int StringCompare(String* s1, String* s2,
  * @param [in] terminator - what the strings end with.
  *
  * @return true - equal.
- * @return false - inequal.
+ * @return false - unequal.
 */
 bool StringEqual(const char* s1, const char* s2, const size_t length, char terminator);
 
@@ -138,7 +138,7 @@ char* StringFind(char* where, const char* target, char terminator);
  * @param [in] target - the char to find.
  * @param [in] terminator - what the string ends with.
  *
- * @return char* to the first occurence of target in where.
+ * @return char* to the first occurrence of target in where.
 */
 char* StringFindChar(char* where, const char target, char terminator);
 

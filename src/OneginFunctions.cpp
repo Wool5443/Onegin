@@ -6,6 +6,7 @@
 #include "OneginFunctions.hpp"
 #include "Utils.hpp"
 #include "StringFunctions.hpp"
+#include "Sort.hpp"
 
 size_t getFileSize(const char* path);
 
