@@ -288,3 +288,21 @@ void StringPrint(FILE* file, const char* string, char terminator)
         putc(*string++, file);
     putc('\n', file);
 }
+
+int StringIsEmptyChars(const String* string)
+{
+    for (size_t i = 0; i < string->length; i++)
+        if (!isspace(string->text[i]))
+            return 0;
+    return 1;
+}
+
+int StringIsEmptyChars(const char* string, char terminator)
+{
+    while (isspace(*string) && *string != terminator)
+        *string++;
+
+    if (*string == 0)
+        return 1;
+    return 0;
+}
