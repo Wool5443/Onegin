@@ -25,19 +25,19 @@ int main(const int argc, const char* const* argv)
     FILE* out = fopen(argv[2], "w");
 
     clock_t start = clock();
-    SortTextLines(&hamlet, START_TO_END);
+    SortTextTokens(&hamlet, START_TO_END);
     printf("Sorting took %g seconds\n", ((double)(clock() - start)) / CLOCKS_PER_SEC);
 
     fputs("[Alphabetic sort Start To End.]\n\n", out);
-    PrintTextLines(&hamlet, out);
+    PrintTextTokens(&hamlet, out, '\n');
     fputs("------------------------------------------------------------------------------------------\n", out);
 
     start = clock();
-    SortTextLines(&hamlet, END_TO_START);
+    SortTextTokens(&hamlet, END_TO_START);
     printf("Sorting took %g seconds\n", ((double)(clock() - start)) / CLOCKS_PER_SEC);
 
     fputs("[Alphabetic sort End To Start.]\n\n", out);
-    PrintTextLines(&hamlet, out);
+    PrintTextTokens(&hamlet, out, '\n');
     fputs("------------------------------------------------------------------------------------------\n", out);
 
     fputs("[Original text.]\n\n", out);
